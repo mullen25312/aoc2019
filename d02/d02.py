@@ -1,5 +1,3 @@
-import math
-
 class d02:
     def __init__(self):
         self.data = []
