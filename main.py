@@ -22,7 +22,7 @@ def main():
     # day3
     m_dailyPuzzle.readData()
     print(m_dailyPuzzle.solvePartOne())
-    print(m_dailyPuzzle.solvePartTwo())
+    #print(m_dailyPuzzle.solvePartTwo())
   
 if __name__== "__main__":
     main()
