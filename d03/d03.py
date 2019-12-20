@@ -75,7 +75,7 @@ class d03:
 
         crossings = line1Positions.intersection(line2Positions)
         distances = [abs(point[0]) + abs(point[1]) for point in list(crossings)]
-        return  min(distances)
+        return min(distances)
 
     def solvePartTwo(self):
 
