@@ -1,19 +1,24 @@
+def numberOfValidCodes(digit, decimalPower):
+    if decimalPower == 0:
+        return 1
+    else:
+        if digit == 0: return sum(numberOfValidCodes(range(0,11), decimalPower-1))
+        else: return numberOfValidCodes(digit-1, decimalPower) - numberOfValidCodes(digit-1, decimalPower-1)
+
 
 class d04:
     def __init__(self):
-        self.data = []
+        self.number1 = []
+        self.number2 = []
 
 
     def readData(self):
-        # print('data read')
-        # with open('./d03/input.txt') as f:
-        #     self.line1 = f.readline().split(",")
-        #     self.line2 = f.readline().split(",")
-        print('data read')
+        self.number1 = 284639
+        self.number2 = 748759
 
 
     def solvePartOne(self):
-        return True
+        return numberOfValidCodes(2,1)
 
 
     def solvePartTwo(self):
