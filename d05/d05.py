@@ -4,7 +4,7 @@ class d04:
         self.data = []
 
 
-    def readData(self):
+    def read_data(self):
         # print('data read')
         # with open('./d03/input.txt') as f:
         #     self.line1 = f.readline().split(",")
@@ -12,11 +12,11 @@ class d04:
         print('data read')
 
 
-    def solvePartOne(self):
+    def solve_part_one(self):
         return True
 
 
-    def solvePartTwo(self):
+    def solve_part_two(self):
         return True
 
 

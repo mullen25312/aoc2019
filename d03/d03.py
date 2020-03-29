@@ -5,7 +5,7 @@ class d03:
         self.line2 = []
 
 
-    def readData(self):
+    def read_data(self):
         print('data read')
         with open('./d03/input.txt') as f:
             self.line1 = f.readline().split(",")
@@ -18,7 +18,7 @@ class d03:
             # self.line2 = 'U98,R91,D20,R16,D67,R40,U7,R15,U6,R7'.split(",")
 
 
-    def solvePartOne(self):
+    def solve_part_one(self):
         # create list of positions of line1
         line1Positions = set()
         pos = [0,0]
@@ -77,7 +77,7 @@ class d03:
         distances = [abs(point[0]) + abs(point[1]) for point in list(crossings)]
         return min(distances)
 
-    def solvePartTwo(self):
+    def solve_part_two(self):
 
         # create list of positions of line1
         line1Positions = dict()
