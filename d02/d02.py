@@ -1,4 +1,4 @@
-class d02:
+class DailyPuzzle:
     def __init__(self):
         self.data = []
 

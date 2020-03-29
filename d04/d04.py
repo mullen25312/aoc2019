@@ -1,15 +1,3 @@
-# def numberOfValidCodes(digit, decimalPower):
-#     if decimalPower == 0:
-#         return 1
-#     else:
-#         if digit == 0:
-#             return sum(numberOfValidCodes(range(0, 11), decimalPower - 1))
-#         else:
-#             return numberOfValidCodes(digit - 1, decimalPower) - numberOfValidCodes(
-#                 digit - 1, decimalPower - 1
-#             )
-
-
 def get_digits(number):
     digits = []
     while number != 0:
@@ -59,7 +47,7 @@ def criteria_three(number):
     return False
 
 
-class d04:
+class DailyPuzzle:
     def __init__(self):
         self.number1 = []
         self.number2 = []
