@@ -34,7 +34,7 @@ def main():
     # # day5
     puzzle.read_data()
     print(puzzle.solve_part_one())
-    # print(puzzle.solve_part_two())
+    print(puzzle.solve_part_two())
 
 
 if __name__ == "__main__":
