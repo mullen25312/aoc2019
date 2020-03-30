@@ -1,3 +1,6 @@
+from utils.utils import IntcodeComputer
+
+
 class DailyPuzzle:
     def __init__(self):
         self.data = []
@@ -9,27 +12,12 @@ class DailyPuzzle:
 
     def solve_part_one(self):
         data = self.data.copy()
-
-        # inputs
         data[1] = 12
         data[2] = 2
 
-        # run through opcodes
-        idx = 0
-        while data[idx] != 99 and idx <= len(data):
-
-            # opcode 1
-            if data[idx] == 1:
-                data[data[idx + 3]] = data[data[idx + 1]] + data[data[idx + 2]]
-
-            # opcode 2
-            elif data[idx] == 2:
-                data[data[idx + 3]] = data[data[idx + 1]] * data[data[idx + 2]]
-
-            # next opcode
-            idx = idx + 4
-
-        return data[0]
+        intcode_computer = IntcodeComputer(data)
+        intcode_computer.run()
+        return intcode_computer.return_intcode_program()[0]
 
     def solve_part_two(self, noun, verb):
         data = self.data.copy()
@@ -38,23 +26,11 @@ class DailyPuzzle:
         data[1] = noun
         data[2] = verb
 
-        # run through opcodes
-        idx = 0
-        while data[idx] != 99 and idx <= len(data):
-
-            # opcode 1
-            if data[idx] == 1:
-                data[data[idx + 3]] = data[data[idx + 1]] + data[data[idx + 2]]
-
-            # opcode 2
-            elif data[idx] == 2:
-                data[data[idx + 3]] = data[data[idx + 1]] * data[data[idx + 2]]
-
-            # next opcode
-            idx = idx + 4
+        intcode_computer = IntcodeComputer(data)
+        intcode_computer.run()
 
         # check result
-        if data[0] == 19690720:
+        if intcode_computer.return_intcode_program()[0] == 19690720:
             return 100 * noun + verb
         else:
             return 0

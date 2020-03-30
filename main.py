@@ -1,11 +1,11 @@
 # my solutions to the Advent of Code 2019
 # https://adventofcode.com/2019
 
-
 # from d01.d01 import DailyPuzzle
 # from d02.d02 import DailyPuzzle
 # from d03.d03 import DailyPuzzle
-from d04.d04 import DailyPuzzle
+# from d04.d04 import DailyPuzzle
+from d05.d05 import DailyPuzzle
 
 
 def main():
@@ -19,17 +19,22 @@ def main():
     # # day2
     # puzzle.read_data()
     # print(puzzle.solve_part_one())
-    # print(puzzle.solve_part_two(90,74))
+    # print(puzzle.solve_part_two(90, 74))
 
     # # day3
     # puzzle.read_data()
     # print(puzzle.solve_part_one())
     # print(puzzle.solve_part_two())
 
-    # day4
+    # # day4
+    # puzzle.read_data()
+    # print(puzzle.solve_part_one())
+    # print(puzzle.solve_part_two())
+
+    # # day5
     puzzle.read_data()
     print(puzzle.solve_part_one())
-    print(puzzle.solve_part_two())
+    # print(puzzle.solve_part_two())
 
 
 if __name__ == "__main__":
