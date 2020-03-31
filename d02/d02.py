@@ -23,8 +23,8 @@ class DailyPuzzle:
         data = self.data.copy()
 
         # inputs
-        # data[1] = noun
-        # data[2] = verb
+        data[1] = noun
+        data[2] = verb
 
         intcode_computer = IntcodeComputer(data)
         intcode_computer.run()

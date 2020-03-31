@@ -1,5 +1,7 @@
 # my solutions to the Advent of Code 2019
 # https://adventofcode.com/2019
+# https://github.com/mullen25312/aoc2019
+
 
 # from d01.d01 import DailyPuzzle
 # from d02.d02 import DailyPuzzle
@@ -16,7 +18,7 @@ def main():
     # print(puzzle.solve_part_one())
     # print(puzzle.solve_part_two())
 
-    # # day2
+    # day2
     # puzzle.read_data()
     # print(puzzle.solve_part_one())
     # print(puzzle.solve_part_two(90, 74))
@@ -31,7 +33,7 @@ def main():
     # print(puzzle.solve_part_one())
     # print(puzzle.solve_part_two())
 
-    # # day5
+    # day5
     puzzle.read_data()
     print(puzzle.solve_part_one())
     print(puzzle.solve_part_two())
