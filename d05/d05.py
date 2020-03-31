@@ -1,4 +1,4 @@
-from utils.utils import IntcodeComputer
+from utils.intcode_computer import IntcodeComputer
 
 
 class DailyPuzzle:

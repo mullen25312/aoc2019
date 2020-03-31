@@ -7,7 +7,8 @@
 # from d02.d02 import DailyPuzzle
 # from d03.d03 import DailyPuzzle
 # from d04.d04 import DailyPuzzle
-from d05.d05 import DailyPuzzle
+# from d05.d05 import DailyPuzzle
+from d06.d06 import DailyPuzzle
 
 
 def main():
@@ -33,7 +34,12 @@ def main():
     # print(puzzle.solve_part_one())
     # print(puzzle.solve_part_two())
 
-    # day5
+    # # day5
+    # puzzle.read_data()
+    # print(puzzle.solve_part_one())
+    # print(puzzle.solve_part_two())
+
+    # day6
     puzzle.read_data()
     print(puzzle.solve_part_one())
     print(puzzle.solve_part_two())
