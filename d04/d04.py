@@ -47,7 +47,7 @@ def criteria_three(number):
     return False
 
 
-class DailyPuzzle:
+class DailyPuzzle04:
     def __init__(self):
         self.number1 = []
         self.number2 = []

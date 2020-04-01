@@ -1,10 +1,9 @@
-class DailyPuzzle:
+class DailyPuzzle03:
     def __init__(self):
         self.line1 = []
         self.line2 = []
 
     def read_data(self):
-        print("data read")
         with open("./d03/input.txt") as f:
             self.line1 = f.readline().split(",")
             self.line2 = f.readline().split(",")

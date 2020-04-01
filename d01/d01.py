@@ -1,14 +1,14 @@
 import math
 
 
-class DailyPuzzle:
+class DailyPuzzle01:
     def __init__(self):
-        self.data = []
+        self.data = None
 
     def read_data(self):
         with open("./d01/input.txt") as f:
-            tmp = f.readlines()
-            self.data = [int(i) for i in tmp]
+            lines = f.readlines()
+            self.data = [int(line) for line in lines]
 
     def solve_part_one(self):
         return sum([max((math.floor(value / 3) - 2, 0)) for value in self.data])

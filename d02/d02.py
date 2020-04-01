@@ -1,9 +1,9 @@
 from utils.intcode_computer import IntcodeComputer
 
 
-class DailyPuzzle:
+class DailyPuzzle02:
     def __init__(self):
-        self.data = []
+        self.data = None
 
     def read_data(self):
         with open("./d02/input.txt") as f:
@@ -11,22 +11,22 @@ class DailyPuzzle:
             self.data = [int(i) for i in tmp]
 
     def solve_part_one(self):
-        data = self.data.copy()
-        data[1] = 12
-        data[2] = 2
+        program = self.data.copy()
+        program[1] = 12
+        program[2] = 2
 
-        intcode_computer = IntcodeComputer(data)
+        intcode_computer = IntcodeComputer(program)
         intcode_computer.run()
         return intcode_computer.return_intcode_program()[0]
 
     def solve_part_two(self, noun, verb):
-        data = self.data.copy()
+        program = self.data.copy()
 
         # inputs
-        data[1] = noun
-        data[2] = verb
+        program[1] = noun
+        program[2] = verb
 
-        intcode_computer = IntcodeComputer(data)
+        intcode_computer = IntcodeComputer(program)
         intcode_computer.run()
 
         # check result

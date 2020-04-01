@@ -49,7 +49,7 @@ class IntcodeComputer:
         args = list(parameter_modes)
         for idx, param_mode in enumerate(parameter_modes):
             args[idx] = self.intcode_program[self.intruction_pointer + idx + 1]
-            if param_mode == 0:
+            if param_mode == p_modes["position"]:
                 args[idx] = self.intcode_program[args[idx]]
         return args
 
@@ -72,7 +72,7 @@ class IntcodeComputer:
         return True
 
     def input(self, parameter_modes):
-        print("provide integer input: ")
+        print("intcode computer input: ")
         if parameter_modes[0] == 0:
             self.intcode_program[
                 self.intcode_program[self.intruction_pointer + 1]
@@ -85,7 +85,7 @@ class IntcodeComputer:
 
     def output(self, parameter_modes):
         args = self.parse_parameter(parameter_modes)
-        print(args[0])
+        print("intcode computer output: " + str(args[0]))
 
         self.intruction_pointer = self.intruction_pointer + 2
         return True
