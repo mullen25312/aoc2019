@@ -18,12 +18,12 @@ class DailyPuzzle05:
 
     def solve_part_one(self):
         program = self.data.copy()
-        intcode_computer = IntcodeComputer(program)
-        intcode_computer.run()
-        return "puzzle part 1 ran"
+        intcode_computer = IntcodeComputer(program, [1])
+        intcode_computer.run_until_termination()
+        return intcode_computer.outputs
 
     def solve_part_two(self):
         program = self.data.copy()
-        intcode_computer = IntcodeComputer(program)
-        intcode_computer.run()
-        return "puzzle part 2 ran"
+        intcode_computer = IntcodeComputer(program, [5])
+        intcode_computer.run_until_termination()
+        return intcode_computer.outputs

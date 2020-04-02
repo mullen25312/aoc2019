@@ -16,8 +16,8 @@ class DailyPuzzle02:
         program[2] = 2
 
         intcode_computer = IntcodeComputer(program)
-        intcode_computer.run()
-        return intcode_computer.return_intcode_program()[0]
+        intcode_computer.run_until_termination()
+        return intcode_computer.intcode_program[0]
 
     def solve_part_two(self, noun, verb):
         program = self.data.copy()
@@ -27,10 +27,10 @@ class DailyPuzzle02:
         program[2] = verb
 
         intcode_computer = IntcodeComputer(program)
-        intcode_computer.run()
+        intcode_computer.run_until_termination()
 
         # check result
-        if intcode_computer.return_intcode_program()[0] == 19690720:
+        if intcode_computer.intcode_program[0] == 19690720:
             return 100 * noun + verb
         else:
             return 0

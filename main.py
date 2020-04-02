@@ -4,14 +4,14 @@
 
 
 # from d01.d01 import DailyPuzzle01
-from d02.d02 import DailyPuzzle02
-
+# from d02.d02 import DailyPuzzle02
 # from d03.d03 import DailyPuzzle03
 # from d04.d04 import DailyPuzzle04
-from d05.d05 import DailyPuzzle05
-
+# from d05.d05 import DailyPuzzle05
 # from d06.d06 import DailyPuzzle06
-from d07.d07 import DailyPuzzle07
+# from d07.d07 import DailyPuzzle07
+# from d08.d08 import DailyPuzzle08
+from d09.d09 import DailyPuzzle09
 
 
 def main():
@@ -64,12 +64,28 @@ def main():
     # print(d06.solve_part_two())
     # print()
 
-    # day7
-    d07 = DailyPuzzle07()
-    d07.read_data()
-    print("Solutions of daily puzzle 07:")
-    print(d07.solve_part_one())
-    print(d07.solve_part_two())
+    # # day7
+    # d07 = DailyPuzzle07()
+    # d07.read_data()
+    # print("Solutions of daily puzzle 07:")
+    # print(d07.solve_part_one())
+    # print(d07.solve_part_two())
+    # print()
+
+    # # day8
+    # d08 = DailyPuzzle08()
+    # d08.read_data()
+    # print("Solutions of daily puzzle 08:")
+    # print(d08.solve_part_one())
+    # print(d08.solve_part_two())
+    # print()
+
+    # day8
+    d09 = DailyPuzzle09()
+    d09.read_data()
+    print("Solutions of daily puzzle 09:")
+    print(d09.solve_part_one())
+    print(d09.solve_part_two())
     print()
 
 

@@ -2,7 +2,7 @@ p_modes = {"position": 0, "immediate": 1}
 
 
 class IntcodeComputer:
-    def __init__(self, intcode_program):
+    def __init__(self, intcode_program, inputs=[]):
         self.opcodes = {
             # addition
             1: (self.addition, (p_modes["position"], p_modes["position"])),
@@ -44,6 +44,8 @@ class IntcodeComputer:
         }
         self.intruction_pointer = 0
         self.intcode_program = intcode_program
+        self.inputs = inputs
+        self.outputs = []
 
     def parse_parameter(self, parameter_modes):
         args = list(parameter_modes)
@@ -72,25 +74,22 @@ class IntcodeComputer:
         return True
 
     def input(self, parameter_modes):
-        print("intcode computer input: ")
         if parameter_modes[0] == 0:
             self.intcode_program[
                 self.intcode_program[self.intruction_pointer + 1]
-            ] = int(input())
+            ] = self.inputs[0]
         else:
-            self.intcode_program[self.intruction_pointer + 1] = int(input())
+            self.intcode_program[self.intruction_pointer + 1] = self.inputs[0]
 
         self.intruction_pointer = self.intruction_pointer + 2
+        self.inputs.pop(0)
         return True
 
     def output(self, parameter_modes):
         args = self.parse_parameter(parameter_modes)
-        print("intcode computer output: " + str(args[0]))
+        self.outputs.append(args[0])
 
         self.intruction_pointer = self.intruction_pointer + 2
-        return True
-
-    def terminate(self, not_used):
         return False
 
     def jump_if_true(self, parameter_modes):
@@ -133,11 +132,20 @@ class IntcodeComputer:
         self.intruction_pointer = self.intruction_pointer + 4
         return True
 
-    def return_intcode_program(self):
-        return self.intcode_program
+    def terminate(self, not_used):
+        return False
 
     def run(self):
         while True:
             handle, params = self.opcodes[self.intcode_program[self.intruction_pointer]]
             if handle(params) == False:
                 break
+
+    def run_until_termination(self):
+        while True:
+            handle, params = self.opcodes[self.intcode_program[self.intruction_pointer]]
+            if handle(params) == False and handle == self.terminate:
+                break
+
+    def terminated(self):
+        return self.intcode_program[self.intruction_pointer] == 99
