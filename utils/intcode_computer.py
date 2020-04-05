@@ -1,85 +1,172 @@
-p_modes = {"position": 0, "immediate": 1}
+from collections import defaultdict
+
+# parameter modes: postion, immediate and relative
+p_mode = {"pos": 0, "imm": 1, "rel": 2}
 
 
 class IntcodeComputer:
-    def __init__(self, intcode_program, inputs=[]):
+    def __init__(self, program, inputs=[]):
         self.opcodes = {
             # addition
-            1: (self.addition, (p_modes["position"], p_modes["position"])),
-            1001: (self.addition, (p_modes["position"], p_modes["immediate"])),
-            101: (self.addition, (p_modes["immediate"], p_modes["position"])),
-            1101: (self.addition, (p_modes["immediate"], p_modes["immediate"])),
+            1: (self.addition, (p_mode["pos"], p_mode["pos"], p_mode["pos"])),
+            1001: (self.addition, (p_mode["pos"], p_mode["imm"], p_mode["pos"])),
+            2001: (self.addition, (p_mode["pos"], p_mode["rel"], p_mode["pos"])),
+            101: (self.addition, (p_mode["imm"], p_mode["pos"], p_mode["pos"])),
+            1101: (self.addition, (p_mode["imm"], p_mode["imm"], p_mode["pos"])),
+            2101: (self.addition, (p_mode["imm"], p_mode["rel"], p_mode["pos"])),
+            201: (self.addition, (p_mode["rel"], p_mode["pos"], p_mode["pos"])),
+            1201: (self.addition, (p_mode["rel"], p_mode["imm"], p_mode["pos"])),
+            2201: (self.addition, (p_mode["rel"], p_mode["rel"], p_mode["pos"])),
+            20001: (self.addition, (p_mode["pos"], p_mode["pos"], p_mode["rel"])),
+            21001: (self.addition, (p_mode["pos"], p_mode["imm"], p_mode["rel"])),
+            22001: (self.addition, (p_mode["pos"], p_mode["rel"], p_mode["rel"])),
+            20101: (self.addition, (p_mode["imm"], p_mode["pos"], p_mode["rel"])),
+            21101: (self.addition, (p_mode["imm"], p_mode["imm"], p_mode["rel"])),
+            22101: (self.addition, (p_mode["imm"], p_mode["rel"], p_mode["rel"])),
+            20201: (self.addition, (p_mode["rel"], p_mode["pos"], p_mode["rel"])),
+            21201: (self.addition, (p_mode["rel"], p_mode["imm"], p_mode["rel"])),
+            22201: (self.addition, (p_mode["rel"], p_mode["rel"], p_mode["rel"])),
             # muliplication
-            2: (self.mulitplication, (p_modes["position"], p_modes["position"])),
-            1002: (self.mulitplication, (p_modes["position"], p_modes["immediate"])),
-            102: (self.mulitplication, (p_modes["immediate"], p_modes["position"])),
-            1102: (self.mulitplication, (p_modes["immediate"], p_modes["immediate"])),
+            2: (self.mulitplication, (p_mode["pos"], p_mode["pos"], p_mode["pos"])),
+            1002: (self.mulitplication, (p_mode["pos"], p_mode["imm"], p_mode["pos"])),
+            2002: (self.mulitplication, (p_mode["pos"], p_mode["rel"], p_mode["pos"])),
+            102: (self.mulitplication, (p_mode["imm"], p_mode["pos"], p_mode["pos"])),
+            1102: (self.mulitplication, (p_mode["imm"], p_mode["imm"], p_mode["pos"])),
+            2102: (self.mulitplication, (p_mode["imm"], p_mode["rel"], p_mode["pos"])),
+            202: (self.mulitplication, (p_mode["rel"], p_mode["pos"], p_mode["pos"])),
+            1202: (self.mulitplication, (p_mode["rel"], p_mode["imm"], p_mode["pos"])),
+            2202: (self.mulitplication, (p_mode["rel"], p_mode["rel"], p_mode["pos"])),
+            20002: (self.mulitplication, (p_mode["pos"], p_mode["pos"], p_mode["rel"])),
+            21002: (self.mulitplication, (p_mode["pos"], p_mode["imm"], p_mode["rel"])),
+            22002: (self.mulitplication, (p_mode["pos"], p_mode["rel"], p_mode["rel"])),
+            20102: (self.mulitplication, (p_mode["imm"], p_mode["pos"], p_mode["rel"])),
+            21102: (self.mulitplication, (p_mode["imm"], p_mode["imm"], p_mode["rel"])),
+            22102: (self.mulitplication, (p_mode["imm"], p_mode["rel"], p_mode["rel"])),
+            20202: (self.mulitplication, (p_mode["rel"], p_mode["pos"], p_mode["rel"])),
+            21202: (self.mulitplication, (p_mode["rel"], p_mode["imm"], p_mode["rel"])),
+            22202: (self.mulitplication, (p_mode["rel"], p_mode["rel"], p_mode["rel"])),
             # input
-            3: (self.input, (p_modes["position"],)),
-            103: (self.input, (p_modes["immediate"],)),
+            3: (self.input, (p_mode["pos"],)),
+            103: (self.input, (p_mode["imm"],)),
+            203: (self.input, (p_mode["rel"],)),
             # output
-            4: (self.output, (p_modes["position"],)),
-            104: (self.output, (p_modes["immediate"],)),
+            4: (self.output, (p_mode["pos"],)),
+            104: (self.output, (p_mode["imm"],)),
+            204: (self.output, (p_mode["rel"],)),
             # jump if true
-            5: (self.jump_if_true, (p_modes["position"], p_modes["position"])),
-            1005: (self.jump_if_true, (p_modes["position"], p_modes["immediate"])),
-            105: (self.jump_if_true, (p_modes["immediate"], p_modes["position"])),
-            1105: (self.jump_if_true, (p_modes["immediate"], p_modes["immediate"])),
-            # jumo if false
-            6: (self.jump_if_false, (p_modes["position"], p_modes["position"])),
-            1006: (self.jump_if_false, (p_modes["position"], p_modes["immediate"])),
-            106: (self.jump_if_false, (p_modes["immediate"], p_modes["position"])),
-            1106: (self.jump_if_false, (p_modes["immediate"], p_modes["immediate"])),
+            5: (self.jump_if_true, (p_mode["pos"], p_mode["pos"])),
+            1005: (self.jump_if_true, (p_mode["pos"], p_mode["imm"])),
+            2005: (self.jump_if_true, (p_mode["pos"], p_mode["rel"])),
+            105: (self.jump_if_true, (p_mode["imm"], p_mode["pos"])),
+            1105: (self.jump_if_true, (p_mode["imm"], p_mode["imm"])),
+            2105: (self.jump_if_true, (p_mode["imm"], p_mode["rel"])),
+            205: (self.jump_if_true, (p_mode["rel"], p_mode["pos"])),
+            1205: (self.jump_if_true, (p_mode["rel"], p_mode["imm"])),
+            2205: (self.jump_if_true, (p_mode["rel"], p_mode["rel"])),
+            # jump if false
+            6: (self.jump_if_false, (p_mode["pos"], p_mode["pos"])),
+            1006: (self.jump_if_false, (p_mode["pos"], p_mode["imm"])),
+            2006: (self.jump_if_false, (p_mode["pos"], p_mode["rel"])),
+            106: (self.jump_if_false, (p_mode["imm"], p_mode["pos"])),
+            1106: (self.jump_if_false, (p_mode["imm"], p_mode["imm"])),
+            2106: (self.jump_if_false, (p_mode["imm"], p_mode["rel"])),
+            206: (self.jump_if_false, (p_mode["rel"], p_mode["pos"])),
+            1206: (self.jump_if_false, (p_mode["rel"], p_mode["imm"])),
+            2206: (self.jump_if_false, (p_mode["rel"], p_mode["rel"])),
             # less than
-            7: (self.less_than, (p_modes["position"], p_modes["position"])),
-            1007: (self.less_than, (p_modes["position"], p_modes["immediate"])),
-            107: (self.less_than, (p_modes["immediate"], p_modes["position"])),
-            1107: (self.less_than, (p_modes["immediate"], p_modes["immediate"])),
+            7: (self.less_than, (p_mode["pos"], p_mode["pos"], p_mode["pos"])),
+            1007: (self.less_than, (p_mode["pos"], p_mode["imm"], p_mode["pos"])),
+            2007: (self.less_than, (p_mode["pos"], p_mode["rel"], p_mode["pos"])),
+            107: (self.less_than, (p_mode["imm"], p_mode["pos"], p_mode["pos"])),
+            1107: (self.less_than, (p_mode["imm"], p_mode["imm"], p_mode["pos"])),
+            2107: (self.less_than, (p_mode["imm"], p_mode["rel"], p_mode["pos"])),
+            207: (self.less_than, (p_mode["rel"], p_mode["pos"], p_mode["pos"])),
+            1207: (self.less_than, (p_mode["rel"], p_mode["imm"], p_mode["pos"])),
+            2207: (self.less_than, (p_mode["rel"], p_mode["imm"], p_mode["pos"])),
+            20007: (self.less_than, (p_mode["pos"], p_mode["pos"], p_mode["rel"])),
+            21007: (self.less_than, (p_mode["pos"], p_mode["imm"], p_mode["rel"])),
+            22007: (self.less_than, (p_mode["pos"], p_mode["rel"], p_mode["rel"])),
+            20107: (self.less_than, (p_mode["imm"], p_mode["pos"], p_mode["rel"])),
+            21107: (self.less_than, (p_mode["imm"], p_mode["imm"], p_mode["rel"])),
+            22107: (self.less_than, (p_mode["imm"], p_mode["imm"], p_mode["rel"])),
+            20207: (self.less_than, (p_mode["rel"], p_mode["pos"], p_mode["rel"])),
+            21207: (self.less_than, (p_mode["rel"], p_mode["imm"], p_mode["rel"])),
+            22207: (self.less_than, (p_mode["rel"], p_mode["imm"], p_mode["rel"])),
             # equals
-            8: (self.equals, (p_modes["position"], p_modes["position"])),
-            1008: (self.equals, (p_modes["position"], p_modes["immediate"])),
-            108: (self.equals, (p_modes["immediate"], p_modes["position"])),
-            1108: (self.equals, (p_modes["immediate"], p_modes["immediate"])),
+            8: (self.equals, (p_mode["pos"], p_mode["pos"], p_mode["pos"])),
+            1008: (self.equals, (p_mode["pos"], p_mode["imm"], p_mode["pos"])),
+            2008: (self.equals, (p_mode["pos"], p_mode["rel"], p_mode["pos"])),
+            108: (self.equals, (p_mode["imm"], p_mode["pos"], p_mode["pos"])),
+            1108: (self.equals, (p_mode["imm"], p_mode["imm"], p_mode["pos"])),
+            2108: (self.equals, (p_mode["imm"], p_mode["rel"], p_mode["pos"])),
+            208: (self.equals, (p_mode["rel"], p_mode["pos"], p_mode["pos"])),
+            1208: (self.equals, (p_mode["rel"], p_mode["imm"], p_mode["pos"])),
+            2208: (self.equals, (p_mode["rel"], p_mode["rel"], p_mode["pos"])),
+            20008: (self.equals, (p_mode["pos"], p_mode["pos"], p_mode["rel"])),
+            21008: (self.equals, (p_mode["pos"], p_mode["imm"], p_mode["rel"])),
+            22008: (self.equals, (p_mode["pos"], p_mode["rel"], p_mode["rel"])),
+            20108: (self.equals, (p_mode["imm"], p_mode["pos"], p_mode["rel"])),
+            21108: (self.equals, (p_mode["imm"], p_mode["imm"], p_mode["rel"])),
+            22108: (self.equals, (p_mode["imm"], p_mode["rel"], p_mode["rel"])),
+            20208: (self.equals, (p_mode["rel"], p_mode["pos"], p_mode["rel"])),
+            21208: (self.equals, (p_mode["rel"], p_mode["imm"], p_mode["rel"])),
+            22208: (self.equals, (p_mode["rel"], p_mode["rel"], p_mode["rel"])),
+            # relative base
+            9: (self.adjust_relative_base, (p_mode["pos"],)),
+            109: (self.adjust_relative_base, (p_mode["imm"],)),
+            209: (self.adjust_relative_base, (p_mode["rel"],)),
+            # termination
             99: (self.terminate, None),
         }
         self.intruction_pointer = 0
-        self.intcode_program = intcode_program
+        self.intcode_program = defaultdict(
+            int, {i: program[i] for i in range(0, len(program))}
+        )
         self.inputs = inputs
         self.outputs = []
+        self.relative_base = 0
 
     def parse_parameter(self, parameter_modes):
         args = list(parameter_modes)
         for idx, param_mode in enumerate(parameter_modes):
             args[idx] = self.intcode_program[self.intruction_pointer + idx + 1]
-            if param_mode == p_modes["position"]:
+            if param_mode == p_mode["pos"]:
                 args[idx] = self.intcode_program[args[idx]]
+            elif param_mode == p_mode["rel"]:
+                args[idx] = self.intcode_program[self.relative_base + args[idx]]
         return args
 
     def addition(self, parameter_modes):
         args = self.parse_parameter(parameter_modes)
 
-        self.intcode_program[self.intcode_program[self.intruction_pointer + 3]] = (
-            args[0] + args[1]
-        )
+        offset = self.relative_base if parameter_modes[2] == p_mode["rel"] else 0
+        self.intcode_program[
+            offset + self.intcode_program[self.intruction_pointer + 3]
+        ] = (args[0] + args[1])
         self.intruction_pointer = self.intruction_pointer + 4
         return True
 
     def mulitplication(self, parameter_modes):
         args = self.parse_parameter(parameter_modes)
 
-        self.intcode_program[self.intcode_program[self.intruction_pointer + 3]] = (
-            args[0] * args[1]
-        )
+        offset = self.relative_base if parameter_modes[2] == p_mode["rel"] else 0
+        self.intcode_program[
+            offset + self.intcode_program[self.intruction_pointer + 3]
+        ] = (args[0] * args[1])
         self.intruction_pointer = self.intruction_pointer + 4
         return True
 
     def input(self, parameter_modes):
-        if parameter_modes[0] == 0:
+        if parameter_modes[0] == p_mode["pos"]:
             self.intcode_program[
                 self.intcode_program[self.intruction_pointer + 1]
             ] = self.inputs[0]
-        else:
+        elif parameter_modes[0] == p_mode["imm"]:
             self.intcode_program[self.intruction_pointer + 1] = self.inputs[0]
+        elif parameter_modes[0] == p_mode["rel"]:
+            self.intcode_program[
+                self.relative_base + self.intcode_program[self.intruction_pointer + 1]
+            ] = self.inputs[0]
 
         self.intruction_pointer = self.intruction_pointer + 2
         self.inputs.pop(0)
@@ -113,10 +200,15 @@ class IntcodeComputer:
     def less_than(self, parameter_modes):
         args = self.parse_parameter(parameter_modes)
 
+        offset = self.relative_base if parameter_modes[2] == p_mode["rel"] else 0
         if args[0] < args[1]:
-            self.intcode_program[self.intcode_program[self.intruction_pointer + 3]] = 1
+            self.intcode_program[
+                offset + self.intcode_program[self.intruction_pointer + 3]
+            ] = 1
         else:
-            self.intcode_program[self.intcode_program[self.intruction_pointer + 3]] = 0
+            self.intcode_program[
+                offset + self.intcode_program[self.intruction_pointer + 3]
+            ] = 0
 
         self.intruction_pointer = self.intruction_pointer + 4
         return True
@@ -124,12 +216,24 @@ class IntcodeComputer:
     def equals(self, parameter_modes):
         args = self.parse_parameter(parameter_modes)
 
+        offset = self.relative_base if parameter_modes[2] == p_mode["rel"] else 0
         if args[0] == args[1]:
-            self.intcode_program[self.intcode_program[self.intruction_pointer + 3]] = 1
+            self.intcode_program[
+                offset + self.intcode_program[self.intruction_pointer + 3]
+            ] = 1
         else:
-            self.intcode_program[self.intcode_program[self.intruction_pointer + 3]] = 0
+            self.intcode_program[
+                offset + self.intcode_program[self.intruction_pointer + 3]
+            ] = 0
 
         self.intruction_pointer = self.intruction_pointer + 4
+        return True
+
+    def adjust_relative_base(self, parameter_modes):
+        args = self.parse_parameter(parameter_modes)
+        self.relative_base = self.relative_base + args[0]
+
+        self.intruction_pointer = self.intruction_pointer + 2
         return True
 
     def terminate(self, not_used):

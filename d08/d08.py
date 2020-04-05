@@ -1,7 +1,7 @@
 def render_picture(pic, width):
     pic_for_display = []
     for idx in range(len(pic)):
-        pic_for_display.append("x" if pic[idx] else " ")
+        pic_for_display.append("\u2588" if pic[idx] else " ")
         pic_for_display.append("\n" if (idx + 1) % width == 0 else "")
     return "".join(pic_for_display)
 
