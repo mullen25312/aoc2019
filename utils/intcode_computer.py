@@ -82,16 +82,16 @@ class IntcodeComputer:
             2107: (self.less_than, (p_mode["imm"], p_mode["rel"], p_mode["pos"])),
             207: (self.less_than, (p_mode["rel"], p_mode["pos"], p_mode["pos"])),
             1207: (self.less_than, (p_mode["rel"], p_mode["imm"], p_mode["pos"])),
-            2207: (self.less_than, (p_mode["rel"], p_mode["imm"], p_mode["pos"])),
+            2207: (self.less_than, (p_mode["rel"], p_mode["rel"], p_mode["pos"])),
             20007: (self.less_than, (p_mode["pos"], p_mode["pos"], p_mode["rel"])),
             21007: (self.less_than, (p_mode["pos"], p_mode["imm"], p_mode["rel"])),
             22007: (self.less_than, (p_mode["pos"], p_mode["rel"], p_mode["rel"])),
             20107: (self.less_than, (p_mode["imm"], p_mode["pos"], p_mode["rel"])),
             21107: (self.less_than, (p_mode["imm"], p_mode["imm"], p_mode["rel"])),
-            22107: (self.less_than, (p_mode["imm"], p_mode["imm"], p_mode["rel"])),
+            22107: (self.less_than, (p_mode["imm"], p_mode["rel"], p_mode["rel"])),
             20207: (self.less_than, (p_mode["rel"], p_mode["pos"], p_mode["rel"])),
             21207: (self.less_than, (p_mode["rel"], p_mode["imm"], p_mode["rel"])),
-            22207: (self.less_than, (p_mode["rel"], p_mode["imm"], p_mode["rel"])),
+            22207: (self.less_than, (p_mode["rel"], p_mode["rel"], p_mode["rel"])),
             # equals
             8: (self.equals, (p_mode["pos"], p_mode["pos"], p_mode["pos"])),
             1008: (self.equals, (p_mode["pos"], p_mode["imm"], p_mode["pos"])),
@@ -118,122 +118,96 @@ class IntcodeComputer:
             # termination
             99: (self.terminate, None),
         }
-        self.intruction_pointer = 0
-        self.intcode_program = defaultdict(
-            int, {i: program[i] for i in range(0, len(program))}
-        )
+        self.ptr = 0
+        self.program = defaultdict(int, {i: program[i] for i in range(0, len(program))})
         self.inputs = inputs
         self.outputs = []
         self.relative_base = 0
 
     def parse_parameter(self, parameter_modes):
-        args = list(parameter_modes)
+        params = list(parameter_modes)
         for idx, param_mode in enumerate(parameter_modes):
-            args[idx] = self.intcode_program[self.intruction_pointer + idx + 1]
             if param_mode == p_mode["pos"]:
-                args[idx] = self.intcode_program[args[idx]]
+                params[idx] = self.program[self.ptr + idx + 1]
+            elif param_mode == p_mode["imm"]:
+                params[idx] = self.ptr + idx + 1
             elif param_mode == p_mode["rel"]:
-                args[idx] = self.intcode_program[self.relative_base + args[idx]]
-        return args
+                params[idx] = self.relative_base + self.program[self.ptr + idx + 1]
+        return params
 
     def addition(self, parameter_modes):
-        args = self.parse_parameter(parameter_modes)
+        params = self.parse_parameter(parameter_modes)
+        self.program[params[2]] = self.program[params[0]] + self.program[params[1]]
 
-        offset = self.relative_base if parameter_modes[2] == p_mode["rel"] else 0
-        self.intcode_program[
-            offset + self.intcode_program[self.intruction_pointer + 3]
-        ] = (args[0] + args[1])
-        self.intruction_pointer = self.intruction_pointer + 4
+        self.ptr += 4
         return True
 
     def mulitplication(self, parameter_modes):
-        args = self.parse_parameter(parameter_modes)
+        params = self.parse_parameter(parameter_modes)
+        self.program[params[2]] = self.program[params[0]] * self.program[params[1]]
 
-        offset = self.relative_base if parameter_modes[2] == p_mode["rel"] else 0
-        self.intcode_program[
-            offset + self.intcode_program[self.intruction_pointer + 3]
-        ] = (args[0] * args[1])
-        self.intruction_pointer = self.intruction_pointer + 4
+        self.ptr += 4
         return True
 
     def input(self, parameter_modes):
-        if parameter_modes[0] == p_mode["pos"]:
-            self.intcode_program[
-                self.intcode_program[self.intruction_pointer + 1]
-            ] = self.inputs[0]
-        elif parameter_modes[0] == p_mode["imm"]:
-            self.intcode_program[self.intruction_pointer + 1] = self.inputs[0]
-        elif parameter_modes[0] == p_mode["rel"]:
-            self.intcode_program[
-                self.relative_base + self.intcode_program[self.intruction_pointer + 1]
-            ] = self.inputs[0]
+        params = self.parse_parameter(parameter_modes)
+        self.program[params[0]] = self.inputs.pop(0)
 
-        self.intruction_pointer = self.intruction_pointer + 2
-        self.inputs.pop(0)
+        self.ptr += 2
         return True
 
     def output(self, parameter_modes):
-        args = self.parse_parameter(parameter_modes)
-        self.outputs.append(args[0])
+        params = self.parse_parameter(parameter_modes)
+        self.outputs.append(self.program[params[0]])
 
-        self.intruction_pointer = self.intruction_pointer + 2
+        self.ptr += 2
         return False
 
     def jump_if_true(self, parameter_modes):
-        args = self.parse_parameter(parameter_modes)
+        params = self.parse_parameter(parameter_modes)
 
-        if args[0] != 0:
-            self.intruction_pointer = args[1]
+        if self.program[params[0]] != 0:
+            self.ptr = self.program[params[1]]
         else:
-            self.intruction_pointer = self.intruction_pointer + 3
+            self.ptr += 3
         return True
 
     def jump_if_false(self, parameter_modes):
-        args = self.parse_parameter(parameter_modes)
+        params = self.parse_parameter(parameter_modes)
 
-        if args[0] == 0:
-            self.intruction_pointer = args[1]
+        if self.program[params[0]] == 0:
+            self.ptr = self.program[params[1]]
         else:
-            self.intruction_pointer = self.intruction_pointer + 3
+            self.ptr += 3
         return True
 
     def less_than(self, parameter_modes):
-        args = self.parse_parameter(parameter_modes)
+        params = self.parse_parameter(parameter_modes)
 
-        offset = self.relative_base if parameter_modes[2] == p_mode["rel"] else 0
-        if args[0] < args[1]:
-            self.intcode_program[
-                offset + self.intcode_program[self.intruction_pointer + 3]
-            ] = 1
+        if self.program[params[0]] < self.program[params[1]]:
+            self.program[params[2]] = 1
         else:
-            self.intcode_program[
-                offset + self.intcode_program[self.intruction_pointer + 3]
-            ] = 0
+            self.program[params[2]] = 0
 
-        self.intruction_pointer = self.intruction_pointer + 4
+        self.ptr += 4
         return True
 
     def equals(self, parameter_modes):
-        args = self.parse_parameter(parameter_modes)
+        params = self.parse_parameter(parameter_modes)
 
-        offset = self.relative_base if parameter_modes[2] == p_mode["rel"] else 0
-        if args[0] == args[1]:
-            self.intcode_program[
-                offset + self.intcode_program[self.intruction_pointer + 3]
-            ] = 1
+        if self.program[params[0]] == self.program[params[1]]:
+            self.program[params[2]] = 1
         else:
-            self.intcode_program[
-                offset + self.intcode_program[self.intruction_pointer + 3]
-            ] = 0
+            self.program[params[2]] = 0
 
-        self.intruction_pointer = self.intruction_pointer + 4
+        self.ptr += 4
         return True
 
     def adjust_relative_base(self, parameter_modes):
-        args = self.parse_parameter(parameter_modes)
-        self.relative_base = self.relative_base + args[0]
+        params = self.parse_parameter(parameter_modes)
+        self.relative_base = self.relative_base + self.program[params[0]]
 
-        self.intruction_pointer = self.intruction_pointer + 2
+        self.ptr += 2
         return True
 
     def terminate(self, not_used):
@@ -241,15 +215,15 @@ class IntcodeComputer:
 
     def run(self):
         while True:
-            handle, params = self.opcodes[self.intcode_program[self.intruction_pointer]]
+            handle, params = self.opcodes[self.program[self.ptr]]
             if handle(params) == False:
                 break
 
     def run_until_termination(self):
         while True:
-            handle, params = self.opcodes[self.intcode_program[self.intruction_pointer]]
+            handle, params = self.opcodes[self.program[self.ptr]]
             if handle(params) == False and handle == self.terminate:
                 break
 
     def terminated(self):
-        return self.intcode_program[self.intruction_pointer] == 99
+        return self.program[self.ptr] == 99
