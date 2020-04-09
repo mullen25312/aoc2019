@@ -13,8 +13,10 @@
 # from d08.d08 import DailyPuzzle08
 # from d09.d09 import DailyPuzzle09
 # from d10.d10 import DailyPuzzle10
-from d11.d11 import DailyPuzzle11
-from d12.d12 import DailyPuzzle12
+# from d11.d11 import DailyPuzzle11
+# from d12.d12 import DailyPuzzle12
+from d13.d13 import DailyPuzzle13
+from d14.d14 import DailyPuzzle14
 
 
 def main():
@@ -99,20 +101,36 @@ def main():
     # print(d10.solve_part_two())
     # print()
 
-    # day11
-    d11 = DailyPuzzle11()
-    d11.read_data()
-    print("Solutions of daily puzzle 11:")
-    print(d11.solve_part_one())
-    print(d11.solve_part_two())
+    # # day11
+    # d11 = DailyPuzzle11()
+    # d11.read_data()
+    # print("Solutions of daily puzzle 11:")
+    # print(d11.solve_part_one())
+    # print(d11.solve_part_two())
+    # print()
+
+    # # day12
+    # d12 = DailyPuzzle12()
+    # d12.read_data()
+    # print("Solutions of daily puzzle 12:")
+    # print(d12.solve_part_one())
+    # print(d12.solve_part_two())
+    # print()
+
+    # day13
+    d13 = DailyPuzzle13()
+    d13.read_data()
+    print("Solutions of daily puzzle 13:")
+    print(d13.solve_part_one())
+    print(d13.solve_part_two())
     print()
 
-    # day12
-    d12 = DailyPuzzle12()
-    d12.read_data()
-    print("Solutions of daily puzzle 12:")
-    print(d12.solve_part_one())
-    print(d12.solve_part_two())
+    # day14
+    d14 = DailyPuzzle14()
+    d14.read_data()
+    print("Solutions of daily puzzle 14:")
+    print(d14.solve_part_one())
+    print(d14.solve_part_two())
     print()
 
 

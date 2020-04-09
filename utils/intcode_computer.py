@@ -151,7 +151,7 @@ class IntcodeComputer:
 
     def input(self, parameter_modes):
         params = self.parse_parameter(parameter_modes)
-        self.program[params[0]] = self.inputs.pop(0)
+        self.program[params[0]] = self.inputs.pop(-1)
 
         self.ptr += 2
         return True
